@@ -39,27 +39,25 @@ void setup() {
 
   pAdvertising = BLEDevice::getAdvertising();
 
-  // 里面有个 m_customScanResponseData = true; 和 m_customScanResponseData = true; 所以只能先随便设置一下
-//  BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
+  // 设备信息设置成空白的
   BLEAdvertisementData oScanResponseData = BLEAdvertisementData();
-//  pAdvertising->setAdvertisementData(oAdvertisementData);
   pAdvertising->setScanResponseData(oScanResponseData);
 
+  // 里面有个 m_customScanResponseData = true; 和 m_customScanResponseData = true; 所以只能先随便设置一下
+  BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
+  pAdvertising->setAdvertisementData(oAdvertisementData);
+
   // 简单粗暴直接底层api重新设置一下抓到的raw
-  esp_err_t errRc = ::esp_ble_gap_config_scan_rsp_data_raw(bleRaw, 31);
+  esp_err_t errRc = ::esp_ble_gap_config_adv_data_raw(bleRaw, 31);
   if (errRc != ESP_OK) {
-    Serial.printf("esp_ble_gap_config_scan_rsp_data_raw: %d\n", errRc);
+    Serial.printf("esp_ble_gap_config_adv_data_raw: %d\n", errRc);
   }
-//  errRc = ::esp_ble_gap_config_adv_data_raw(bleRaw, 31);
-//  if (errRc != ESP_OK) {
-//    Serial.printf("esp_ble_gap_config_adv_data_raw: %d\n", errRc);
-//  }
 
   pAdvertising->start();
 }
 
 void loop() {
-  // 闪闪灯
+  // 闪灯灯
   Serial.println("Sparkle");
   delay(1000);
   // 20分钟去待机避免忘了关
