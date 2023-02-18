@@ -13,6 +13,9 @@ uint8_t bleRaw[] = {0x02, 0x01, 0x06, 0x17, 0xFF, 0x00, 0x01, 0xB5, 0x00, 0x02, 
 #define LED_PIN 22
 boolean enableLed = false;
 
+// 设置经过多少毫秒后自动休眠，0 为不自动休眠
+unsigned long autoDeepSleepTime = 20 * 60 * 1000; // 20 分钟
+
 // 设置串口波特率
 #define SERIAL_RATE 115200
 
@@ -131,8 +134,9 @@ void loop() {
   digitalWrite(LED_PIN, LOW);
   delay(1000);
 
-  // 20分钟去待机避免忘了关
-  if (millis() > 1200000) {
+  // 自动休眠
+  if (autoDeepSleepTime > 0 && millis() > autoDeepSleepTime)
+  {
     esp_deep_sleep_start();
   }
 }
