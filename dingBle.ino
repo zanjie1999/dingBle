@@ -14,10 +14,14 @@ boolean rawMoreThan31 = false;
 uint8_t bleRaw32[] = {0x0C,0x09,0x52,0x54,0x4B,0x5F,0x42,0x54,0x5F,0x34,0x2E,0x31,0x00};
 
 // LED 灯的 PIN，跟自己的开发板型号对应
+// 设置 LED 灯的 PIN，具体数字跟自己的开发板型号对应，然后把 enableLed 改成 true
 #define LED_PIN 22
+boolean enableLed = false;
 
 void led_init()
 {
+  if (!enableLed)
+    return;
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 }
