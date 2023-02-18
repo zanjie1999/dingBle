@@ -13,9 +13,19 @@ boolean rawMoreThan31 = false;
 // 31-end
 uint8_t bleRaw32[] = {0x0C,0x09,0x52,0x54,0x4B,0x5F,0x42,0x54,0x5F,0x34,0x2E,0x31,0x00};
 
+// LED 灯的 PIN，跟自己的开发板型号对应
+#define LED_PIN 22
 
-void setup() {
-  Serial.begin(115200);
+void led_init()
+{
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+}
+
+boolean criticalError = false;
+
+void ble_init() {
+  BLEAdvertising *pAdvertising;
 
   // esp32没有提供设置蓝牙mac地址的api 通过查看esp32的源代码
   // 此操作将根据蓝牙mac算出base mac
@@ -46,22 +56,43 @@ void setup() {
   esp_err_t errRc = ::esp_ble_gap_config_adv_data_raw(bleRaw, 31);
   if (errRc != ESP_OK) {
     Serial.printf("esp_ble_gap_config_adv_data_raw: %d\n", errRc);
+    criticalError = true;
+    return;
   }
   // 超过31
   if (rawMoreThan31) {
     errRc = ::esp_ble_gap_config_scan_rsp_data_raw(bleRaw32, sizeof(bleRaw32)/sizeof(bleRaw32[0]));
     if (errRc != ESP_OK) {
       Serial.printf("esp_ble_gap_config_scan_rsp_data_raw: %d\n", errRc);
+      criticalError = true;
+      return;
     }
   }
 
   pAdvertising->start();
 }
 
+void setup()
+{
+  Serial.begin(115200);
+  ble_init();
+  led_init();
+}
+
 void loop() {
-  // 闪灯灯 至于为什么是串口输出，因为并没有内置led，但拥有串口指示灯
-  Serial.println("Sparkle");
+  // 致命错误时灯常亮
+  if (criticalError) {
+    digitalWrite(LED_PIN, HIGH);
+    delay(5000);
+    return;
+  }
+
+  // 闪灯
+  digitalWrite(LED_PIN, HIGH);
   delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  delay(1000);
+
   // 20分钟去待机避免忘了关
   if (millis() > 1200000) {
     esp_deep_sleep_start();
