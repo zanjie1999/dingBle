@@ -53,7 +53,7 @@ void ble_init() {
   pAdvertising->setAdvertisementData(oAdvertisementData);
 
   // 简单粗暴直接底层api重新设置一下抓到的raw
-  esp_err_t errRc = ::esp_ble_gap_config_adv_data_raw(bleRaw, 31);
+  esp_err_t errRc = ::esp_ble_gap_config_adv_data_raw(bleRaw, sizeof(bleRaw));
   if (errRc != ESP_OK) {
     Serial.printf("esp_ble_gap_config_adv_data_raw: %d\n", errRc);
     criticalError = true;
