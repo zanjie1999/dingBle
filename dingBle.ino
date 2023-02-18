@@ -18,6 +18,9 @@ uint8_t bleRaw32[] = {0x0C,0x09,0x52,0x54,0x4B,0x5F,0x42,0x54,0x5F,0x34,0x2E,0x3
 #define LED_PIN 22
 boolean enableLed = false;
 
+// 设置串口波特率
+#define SERIAL_RATE 115200
+
 void led_init()
 {
   if (!enableLed)
@@ -78,7 +81,7 @@ void ble_init() {
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(SERIAL_RATE);
   ble_init();
   led_init();
 }
