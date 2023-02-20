@@ -2,18 +2,7 @@
 #include "BLEDevice.h"
 #include "BLEUtils.h"
 #include "esp_sleep.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-uint8_t temprature_sens_read();
-//uint8_t g_phyFuns;
-
-#ifdef __cplusplus
-}
-#endif
-
+  
 BLEAdvertising *pAdvertising;
 
 uint8_t bleMac[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
@@ -60,7 +49,7 @@ void setup() {
   }
   // 超过31
   if (rawMoreThan31) {
-    errRc = ::esp_ble_gap_config_scan_rsp_data_raw(bleRaw32, sizeof(bleRaw32));
+    errRc = ::esp_ble_gap_config_scan_rsp_data_raw(bleRaw32, sizeof(bleRaw32)/sizeof(bleRaw32[0]));
     if (errRc != ESP_OK) {
       Serial.printf("esp_ble_gap_config_scan_rsp_data_raw: %d\n", errRc);
     }
@@ -70,7 +59,7 @@ void setup() {
 }
 
 void loop() {
-  // 闪灯灯
+  // 闪灯灯 至于为什么是串口输出，因为并没有内置led，但拥有串口指示灯
   Serial.println("Sparkle");
   delay(1000);
   // 20分钟去待机避免忘了关
